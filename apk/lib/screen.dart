@@ -1,3 +1,5 @@
+import 'package:apk/animatedskillcard.dart';
+import 'package:apk/projectcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,18 +11,24 @@ class PortfolioScreen extends StatefulWidget {
 
 class _PortfolioScreenState extends State<PortfolioScreen> {
   String? text = "raunakdubey681@gmail.com";
-  
-
-    Future<void> _launchUrl(Uri _url) async {
-    if (await canLaunchUrl(_url)) {
-      await launchUrl(
-        _url,
-        mode: LaunchMode.platformDefault, // Automatically handles web and mobile
-      );
-    } else {
-      throw Exception('Could not launch $_url');
-    }
-  }
+  final List<ProjectData> projects = [
+    ProjectData(
+      title: "GO COLORS CLONE",
+      description: "With Backend",
+      url: "https://github.com/Lucifer-Aspire-A315/myapp.git",
+      
+    ),
+    ProjectData(
+      title: "UI Design",
+      description: "UI Case Study",
+      url: "https://github.com/raunak581/Testomkar.git",
+    ),
+    ProjectData(
+      title: "Portfolio App",
+      description: "Built with Flutter",
+      url: "https://github.com/raunak581/Portfolio.git",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,25 +43,28 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF141414), // Dark Background Color
               borderRadius: BorderRadius.circular(50), // Rounded edges
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Logo Section
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.white10,
+                  backgroundColor: Colors.white12,
                   child: Icon(Icons.apps, color: Colors.redAccent),
                 ),
-
-                // Navigation Items
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     NavItem(title: "ABOUT", isSelected: true),
-                    // const SizedBox(width: 20),
-                    // NavItem(title: "PORTFOLIO"),
-                    const SizedBox(width: 20),
+                    SizedBox(width: 20),
                     NavItem(title: "CONTACT"),
                   ],
                 ),
@@ -204,48 +215,76 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                 ),
 
                 const SizedBox(height: 10),
-              _buildRecentWorkSection(),
-              const SizedBox(height: 20),
-              _buildSkillCards(),
-              const SizedBox(height: 20),
-              _buildProjectHighlight(),
+                _buildRecentWorkSection(),
+                const SizedBox(height: 20),
+                _buildSkillCards(),
+                const SizedBox(height: 20),
+                _buildProjectHighlight(),
+                const SizedBox(height: 20),
               ],
             ),
           ),
         ));
   }
 
-    // Recent Work Section
+  // Recent Work Section
   Widget _buildRecentWorkSection() {
-    return Card(
-      color: const Color(0xFF141414),
-      elevation: 10,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "• Recent Work",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white70,
-                fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          colors: [Colors.black, const Color(0xFF1C1C1C)], // Subtle gradient
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Section Title
+              const Text(
+                "• Recent Work",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            _buildWorkItem("App Developer", "2024 - Present", "Sun Technologies Pvt Ltd", Colors.redAccent),
-            // _buildWorkItem("UI/UX designer", "2021 - 2022", "Google", Colors.white),
-            // _buildWorkItem("Product designer", "2023 - Present", "Figma", Colors.redAccent),
-            // _buildWorkItem("Product designer", "2023 - Present", "Figma", Colors.redAccent),
-          ],
+              const SizedBox(height: 10),
+
+              // Recent Work Items
+              _buildWorkItem(
+                "App Developer",
+                "2024 - Present",
+                "Sun Technologies Pvt Ltd",
+                Colors.redAccent,
+              ),
+              const Divider(color: Colors.white24, thickness: 1),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildWorkItem(String title, String duration, String company, Color color) {
+  Widget _buildWorkItem(
+      String title, String duration, String company, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -273,7 +312,6 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             style: const TextStyle(color: Colors.white54, fontSize: 14),
           ),
         ],
-
       ),
     );
   }
@@ -285,84 +323,111 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       crossAxisCount: 2,
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
-      childAspectRatio: 3,
+      childAspectRatio: 3 / 2,
       children: [
-        _buildSkillCard("Product design"),
-        _buildSkillCard("User Experience"),
-        // _buildSkillCard("NoCode develop"),
+        AnimatedSkillCard(
+          title: "Product design",
+          imageUrl:
+              "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1655&auto=format&fit=crop",
+        ),
+        AnimatedSkillCard(
+          title: "User Experience",
+          imageUrl:
+              "https://plus.unsplash.com/premium_photo-1720287601300-cf423c3d6760?q=80&w=1740&auto=format&fit=crop",
+        ),
       ],
     );
   }
 
-  Widget _buildSkillCard(String title) {
+  Widget _buildSkillCard(String title, String imageUrl) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1C1C1C),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.redAccent.withOpacity(0.2),
-            blurRadius: 10,
-            spreadRadius: 1,
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 8,
+            spreadRadius: 2,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Center(
-        child: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.white70,
+      child: Stack(
+        children: [
+          // Background Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
           ),
-        ),
+          // Gradient Overlay
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                colors: [Colors.black.withOpacity(0.4), Colors.transparent],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
+          ),
+          // Title Text
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   // Project Highlight Section
   Widget _buildProjectHighlight() {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1C1C1C),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child:  Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "GO COLORS CLONE",
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            SizedBox(height: 5),
-            Text(
-              "With Backend",
-              style: TextStyle(fontSize: 14, color: Colors.white54),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: CircleAvatar(
-                backgroundColor: Colors.redAccent,
-                child: IconButton(
-            onPressed: () {
-              final Uri _url =
-                  Uri.parse("https://github.com/Lucifer-Aspire-A315/myapp.git");
-              _launchUrl(_url);
-            },
-            icon: const Icon(Icons.arrow_outward, color: Colors.white),
-          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: projects.map((project) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1C1C1C),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 6,
+                spreadRadius: 1,
+                offset: const Offset(0, 3),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+          child: AnimatedProjectCard(
+            title: project.title,
+            description: project.description,
+            url: project.url,
+          ),
+        );
+      }).toList(),
     );
   }
 }
-
 
 class NavItem extends StatelessWidget {
   final String title;
